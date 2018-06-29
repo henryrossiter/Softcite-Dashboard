@@ -8,8 +8,7 @@ dashboardPage(skin = "black",
       menuItem("Project Status", tabName = "projectStatus", icon = icon("tasks", lib = "glyphicon")),
       menuItem("Missing Work", tabName = "missingWork", icon = icon("folder-open", lib = "glyphicon")),
       menuItem("Mention Analysis", tabName = "mentionAnalysis", icon = icon("align-left", lib = "glyphicon")),
-      menuItem("Coder Information", tabName = "coderInfo", icon = icon("user", lib = "glyphicon"), uiOutput("coderSelect")
-      )
+      menuItem("Coder Information", tabName = "coderInfo", icon = icon("user", lib = "glyphicon"))
   )
   ),
   dashboardBody(
@@ -44,6 +43,7 @@ dashboardPage(skin = "black",
       ),
       tabItem(tabName = "coderInfo",
               fluidRow(
+                uiOutput("coderSelect"),
                 valueBoxOutput("codedByCoder")
               )
       )

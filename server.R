@@ -189,8 +189,8 @@ getNumArticles <- function(){
   return(length(unique(all_coded_articles$article)))
   #return(nrow(na.omit(distinct(all_coded_articles)))) #total number of distinct articles
 }
-getNumArticlesByCoder <- function(coderName){
-  return(length(unique(all_coded_articles[all_coded_articles$coder == "henryrossiter"])))
+getNumArticlesByCoder <- function(coderSelection){
+  return(nrow(all_coded_articles[all_coded_articles$coder == coderSelection,]))
 }
 getCoders <- function(){
   return(unique(all_coded_articles$coder))
@@ -217,7 +217,7 @@ getAssignmentsByCoder <- function(){
     missingChart <- assigned %>% 
     group_by(coder) %>% 
     summarize(num_missing = n(),
-              missing    = str_c(article, collapse = "; ")) %>% 
+              missing = str_c(article, collapse = "; ")) %>% 
     arrange(desc(num_missing))
   missingChart[3] <- NULL
   return(missingChart)
@@ -229,7 +229,7 @@ getArticlesMissingByCoder <- function(){
   missingChart <- missing %>% 
     group_by(coder) %>% 
     summarize(num_missing = n(),
-              missing    = str_c(article, collapse = "; ")) %>% 
+              missing = str_c(article, collapse = "; ")) %>% 
     arrange(desc(num_missing))
   missingChart[3] <- NULL
   return(missingChart)
@@ -262,10 +262,14 @@ shinyServer(function(input, output) {
     )
   })
   output$codedByCoder <- renderValueBox({
-    valueBox(
-      getNumArticlesByCoder(), "articles coded", icon = icon("user", lib = "glyphicon"),
-      color = "yellow"
-    )
+    reactive({
+      if(!is.null(input$coderSelect)){
+        valueBox(
+          getNumArticlesByCoder(input$coderSelect), paste("articles coded by ",input$coderSelect), icon = icon("user", lib = "glyphicon"),
+          color = "yellow"
+        )
+      }
+    })
   })
   
   
