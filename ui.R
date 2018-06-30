@@ -1,6 +1,10 @@
 ## ui.R ##
 library(shinydashboard)
 
+#make sure working directory is set to parent folder - use setwd()
+source(paste0(getwd(),"/queries.R"))
+
+
 dashboardPage(skin = "black",
   dashboardHeader(title = "Softcite"),
   dashboardSidebar(
@@ -9,7 +13,7 @@ dashboardPage(skin = "black",
       menuItem("Missing Work", tabName = "missingWork", icon = icon("folder-open", lib = "glyphicon")),
       menuItem("Mention Analysis", tabName = "mentionAnalysis", icon = icon("align-left", lib = "glyphicon")),
       menuItem("Coder Information", tabName = "coderInfo", icon = icon("user", lib = "glyphicon"))
-  )
+    )
   ),
   dashboardBody(
     tabItems(
@@ -43,7 +47,9 @@ dashboardPage(skin = "black",
       ),
       tabItem(tabName = "coderInfo",
               fluidRow(
-                uiOutput("coderSelect"),
+                selectInput("coderInput","Select a coder",
+                            choices = getCoders(),
+                            selected = "henryrossiter"),
                 valueBoxOutput("codedByCoder")
               )
       )

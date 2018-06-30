@@ -2,7 +2,9 @@
 # This is the server logic of a Shiny web application. You can run the
 # application by clicking 'Run App' above.
 #
-source("C:/Users/Henry/Desktop/howisonLabOnServer/softcite-dataset/code/dashboard/softcite-dashboard/queries.R")
+#make sure working directory is set to parent folder - use setwd()
+source(paste0(getwd(),"/queries.R"))
+
 
 ## Server Logic
   ## Defines output values and visualizations
@@ -32,14 +34,12 @@ shinyServer(function(input, output) {
     )
   })
   output$codedByCoder <- renderValueBox({
-    reactive({
-      if(!is.null(input$coderSelect)){
+      if(!is.null(input$coderInput)){
         valueBox(
-          getNumArticlesByCoder(input$coderSelect), paste("articles coded by ",input$coderSelect), icon = icon("user", lib = "glyphicon"),
+          getNumArticlesByCoder(input$coderInput), paste("articles coded by ",input$coderInput), icon = icon("user", lib = "glyphicon"),
           color = "yellow"
         )
       }
-    })
   })
   
   
@@ -80,10 +80,4 @@ shinyServer(function(input, output) {
             horiz = TRUE,
             xlab = "Total Articles Assigned")
   })
-  output$coderSelect <- renderUI({
-    selectInput("coderInput","Select a coder",
-                choices = getCoders(),
-                selected = "henryrossiter")
-  })
-  
 })
