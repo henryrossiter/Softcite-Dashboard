@@ -151,21 +151,21 @@ pmc_assignments %>%
 
 # work assigned.
 assigned <- pmc_assignments %>% 
-  select(article = pub_id, coder = assigned_to)
+  select(article = pub_id, coder = assigned_to) %>%
+  distinct()
 
 # work actually done and gathered.
 completed <- all_coded_articles %>% 
-  select(article, coder)
-
-
+  select(article, coder) %>%
+  distinct()
 
 ## Helper functions
 #used to format percentages
 asPercent <- function(x, digits = 2, format = "f", ...) {
   paste0(formatC(100 * x, format = format, digits = digits, ...), "%")
 }
-## Methods to access useful stats
 
+## Methods to access stats
 getFracNames <- function(){
   with_name <- has_name["true"]
   return(with_name/(with_name+has_name["false"]))
@@ -176,21 +176,25 @@ getFracVersions <- function(){
 }
 getFracUrls <- function(){
   with_url <- has_url["true"]
-  return(with_url/(with_url+has_url["false"]))
+  without_urld <- has_url["false"]
+  return(with_url/(with_url+without_url))
 }
 getNumMentions <- function(){
   return(length(mentions$article))
 }
+#unique articles, does not count articles coded for a second time by a seperate coder
 getNumArticles <- function(){
   return(length(unique(all_coded_articles$article)))
-  #return(nrow(na.omit(distinct(all_coded_articles)))) #total number of distinct articles
 }
+#total articles received from coder specified by param 'coderSelection', a github username passed as a string
 getNumArticlesByCoder <- function(coderSelection){
   return(nrow(all_coded_articles[all_coded_articles$coder == coderSelection,]))
 }
+#all coders that have coded at least one received articles
 getCoders <- function(){
   return(unique(all_coded_articles$coder))
 }
+#number of coders that have coded at least one received articles
 getNumCoders <- function(){
   return(length(unique(all_coded_articles$coder)))
 }
@@ -200,14 +204,16 @@ getSoftwareNames <- function(){
 getMostCommonSoftware <- function(){
   return(sort(table(software_names),decreasing=TRUE)[1:10])
 }
+
+#verify this function, not sure if calculation is correct
 getPctAssignedCoded <- function(){
   numAssigned <- pmc_assignments %>% 
     group_by(assigned)
   numAssigned = nrow(numAssigned)
   
-  numCoded <- completed %>%  distinct()
-  numCoded <- nrow(numCoded)
-  return(asPercent(numCoded/(numCoded + numAssigned)))
+  numReceived <- nrow(completed)
+  
+  return(asPercent(numReceived/(numAssigned)))
 }
 getAssignmentsByCoder <- function(){
   missingChart <- assigned %>% 

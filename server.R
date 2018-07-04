@@ -34,8 +34,10 @@ shinyServer(function(input, output) {
     )
   })
   output$codedByCoder <- renderValueBox({
+      #if a coder has been selected from 'coderInput' selectInput in UI
       if(!is.null(input$coderInput)){
         valueBox(
+          #valuebox displays total articles coded by whichever coder is chosen in dropdown
           getNumArticlesByCoder(input$coderInput), paste("articles coded by ",input$coderInput), icon = icon("user", lib = "glyphicon"),
           color = "yellow"
         )

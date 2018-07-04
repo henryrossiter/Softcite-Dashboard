@@ -8,6 +8,7 @@ source(paste0(getwd(),"/queries.R"))
 dashboardPage(skin = "black",
   dashboardHeader(title = "Softcite"),
   dashboardSidebar(
+    # Sidebar Menu - contains menuItems, which are each associated with info pages
     sidebarMenu(
       menuItem("Project Status", tabName = "projectStatus", icon = icon("tasks", lib = "glyphicon")),
       menuItem("Missing Work", tabName = "missingWork", icon = icon("folder-open", lib = "glyphicon")),
@@ -16,6 +17,7 @@ dashboardPage(skin = "black",
     )
   ),
   dashboardBody(
+    #tabItems are pages associated with menuItems
     tabItems(
       tabItem(tabName = "projectStatus",
         # Boxes use row orientation
@@ -47,9 +49,10 @@ dashboardPage(skin = "black",
       ),
       tabItem(tabName = "coderInfo",
               fluidRow(
+                #selectInput allows viewer to choose a coders name to view personalized productivity stats
                 selectInput("coderInput","Select a coder",
-                            choices = getCoders(),
-                            selected = "henryrossiter"),
+                            choices = getCoders()
+                            ),
                 valueBoxOutput("codedByCoder")
               )
       )
