@@ -3,11 +3,11 @@ library(data.world)
 
 dwapi::configure(auth_token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwcm9kLXVzZXItY2xpZW50OnNvZnRjaXRlLXVzZXIiLCJpc3MiOiJhZ2VudDpzb2Z0Y2l0ZS11c2VyOjphNGExYmI1NS1lMGUwLTQ4YjQtYTE4YS1mOTU4OTcyNGI4YWIiLCJpYXQiOjE1MjgxNDkxNDgsInJvbGUiOlsidXNlcl9hcGlfcmVhZCIsInVzZXJfYXBpX3dyaXRlIl0sImdlbmVyYWwtcHVycG9zZSI6dHJ1ZX0.Dh4pCsfUaa9s_9sAtIIF-uPzue1BWkkH7Cuc5U7EjSvNcTtcO1lp-qKwdD6cSGOLnefXEc1tVz3idzvQAHpaZg')
 
-## Database address
+# ------ Database address
 softcite_ds = "https://data.world/jameshowison/software-citations/"
 
-## Queries
-## TO-DO - some of these queries could likely be combined to improve perfomance
+# ------ Queries
+# ------ TO-DO - some of these queries could likely be combined
 prefixes <- "
 PREFIX bioj: <http://james.howison.name/ontologies/bio-journal-sample#>
 PREFIX bioj-cited: <http://james.howison.name/ontologies/bio-journal-sample-citation#>
@@ -93,11 +93,10 @@ has_url_query <- data.world::qry_sparql(paste(prefixes,
                                               }"
 ))
 assign_qry <- data.world::qry_sql("SELECT * FROM softcite_assignments")
+
+
+# ------ data.world queries
 assignments <- data.world::query(assign_qry, dataset = softcite_ds)
-
-
-
-## data.world queries
 
 mentions <- data.world::query(mention_query, softcite_ds) %>%
   as.tibble(mentions) %>%
@@ -122,7 +121,6 @@ all_coded_articles <- bind_rows(found_selections, no_selection_articles)
 
 software_names <- data.world::query(software_name_query, softcite_ds) %>%
   as.tibble()
-#software_names <- sapply(software_names, tolower)
 
 has_name <- data.world::query(has_name_query, softcite_ds) %>%
   table()
@@ -133,9 +131,7 @@ has_version <- data.world::query(has_version_query, softcite_ds) %>%
 has_url <- data.world::query(has_url_query, softcite_ds) %>%
   table()
 
-
-
-## look at user stats
+# ------ look at user stats
 pmc_assignments <- assignments %>% 
   filter(str_detect(pub_id, "PMC*")) %>% 
   mutate(assigned_to = str_to_lower(assigned_to))
@@ -159,21 +155,26 @@ completed <- all_coded_articles %>%
   select(article, coder) %>%
   distinct()
 
-## Helper functions
+# ------ Helper functions
 #used to format percentages
 asPercent <- function(x, digits = 2, format = "f", ...) {
   paste0(formatC(100 * x, format = format, digits = digits, ...), "%")
 }
 
-## Methods to access stats
+# ------ Methods to access stats
+#fraction of received mentions with software names
 getFracNames <- function(){
   with_name <- has_name["true"]
-  return(with_name/(with_name+has_name["false"]))
+  withjout_name <- has_name["false"]
+  return(with_name/(with_name+withoutName))
 }
+#fraction of received mentions with version numbers
 getFracVersions <- function(){
   with_version <- has_version["true"]
-  return(with_version/(with_version+has_version["false"]))
+  without_version <- has_version["false"]
+  return(with_version/(with_version+without_version))
 }
+#fraction of received mentions with URLs
 getFracUrls <- function(){
   with_url <- has_url["true"]
   without_urld <- has_url["false"]

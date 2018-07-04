@@ -1,4 +1,4 @@
-## ui.R ##
+# ------ ui.R ------
 library(shinydashboard)
 
 #make sure working directory is set to parent folder - use setwd()
