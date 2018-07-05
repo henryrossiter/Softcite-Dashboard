@@ -165,8 +165,8 @@ asPercent <- function(x, digits = 2, format = "f", ...) {
 #fraction of received mentions with software names
 getFracNames <- function(){
   with_name <- has_name["true"]
-  withjout_name <- has_name["false"]
-  return(with_name/(with_name+withoutName))
+  without_Name <- has_name["false"]
+  return(with_name/(with_name+without_Name))
 }
 #fraction of received mentions with version numbers
 getFracVersions <- function(){
