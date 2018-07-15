@@ -1,7 +1,9 @@
 library(tidyverse)
 library(data.world)
+tok <- 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwcm9kLXVzZXItY2xpZW50Omp1a2VzaG9lcyIsImlzcyI6ImFnZW50Omp1a2VzaG9lczo6Y2I1NGNhOWYtZDRlNS00MjA1LThiZWUtODMyMzgzOGZlOTRmIiwiaWF0IjoxNTIxNTgzOTQxLCJyb2xlIjpbInVzZXJfYXBpX3JlYWQiLCJ1c2VyX2FwaV93cml0ZSJdLCJnZW5lcmFsLXB1cnBvc2UiOnRydWV9.fjabpIBunWSHjNFxY73gph48e35LJJAxkL45V6OPdCOV2eyQOch9zLVcVB8Yltr-ThRQyoKe5JrkJcV0El8I4g'
+dwapi::configure(auth_token = tok)
 
-dwapi::configure(auth_token = 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwcm9kLXVzZXItY2xpZW50OnNvZnRjaXRlLXVzZXIiLCJpc3MiOiJhZ2VudDpzb2Z0Y2l0ZS11c2VyOjphNGExYmI1NS1lMGUwLTQ4YjQtYTE4YS1mOTU4OTcyNGI4YWIiLCJpYXQiOjE1MjgxNDkxNDgsInJvbGUiOlsidXNlcl9hcGlfcmVhZCIsInVzZXJfYXBpX3dyaXRlIl0sImdlbmVyYWwtcHVycG9zZSI6dHJ1ZX0.Dh4pCsfUaa9s_9sAtIIF-uPzue1BWkkH7Cuc5U7EjSvNcTtcO1lp-qKwdD6cSGOLnefXEc1tVz3idzvQAHpaZg')
+#dwapi::configure(auth_token = Sys.getenv('auth_token'))
 
 # ------ Database address
 softcite_ds = "https://data.world/jameshowison/software-citations/"
@@ -96,7 +98,7 @@ assign_qry <- data.world::qry_sql("SELECT * FROM softcite_assignments")
 
 
 # ------ data.world queries
-assignments <- data.world::query(assign_qry, dataset = softcite_ds)
+assignments <- data.world::query(assign_qry, softcite_ds)
 
 mentions <- data.world::query(mention_query, softcite_ds) %>%
   as.tibble(mentions) %>%
@@ -136,14 +138,13 @@ pmc_assignments <- assignments %>%
   filter(str_detect(pub_id, "PMC*")) %>% 
   mutate(assigned_to = str_to_lower(assigned_to))
 
-
 pmc_assignees <- pmc_assignments %>% 
   pull(assigned_to) %>% unique()
 
-pmc_assignments %>% 
-  group_by(assigned_to) %>% 
-  tally() %>% 
-  arrange(n)
+#pmc_assignments %>% 
+#  group_by(assigned_to) %>% 
+#  tally() %>% 
+#  arrange(n)
 
 # work assigned.
 assigned <- pmc_assignments %>% 
@@ -214,7 +215,7 @@ getPctAssignedCoded <- function(){
   
   numReceived <- nrow(completed)
   
-  return(asPercent(numReceived/(numAssigned)))
+  return(asPercent(numReceived/numAssigned))
 }
 getAssignmentsByCoder <- function(){
   missingChart <- assigned %>% 
@@ -237,3 +238,4 @@ getArticlesMissingByCoder <- function(){
   missingChart[3] <- NULL
   return(missingChart)
 }
+

@@ -27,7 +27,9 @@ dashboardPage(skin = "black",
           valueBoxOutput("num_coders"),
           valueBoxOutput("num_mentions"),
           box(title = "Articles Assigned By Coder",
-              plotOutput("assigned_by_coder"))
+              plotOutput("assigned_by_coder")),
+          box(title = "Cumulative Articles Assigned",
+              plotOutput("progress_plot"))
         )
       ),
       tabItem(tabName = "missingWork",

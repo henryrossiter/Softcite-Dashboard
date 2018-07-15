@@ -40,7 +40,20 @@ shinyServer(function(input, output) {
         )
       }
   })
-  
+  output$progress_plot <- renderPlot({
+    data <- as.data.frame(assignments)
+    data <- data[order(data$asssigned_timestamp),]
+    data$asssigned_timestamp <- as.Date(data$asssigned_timestamp, "%m/%d/%Y", tz = "America/Chicago")
+    data$tot <- 1
+    data$tot <- cumsum(data$tot)
+    plot(data$asssigned_timestamp, data$tot,
+         type = "l",
+         xlab = "Date",
+         ylab = "Cumulative Assignments", 
+         xaxt="n"
+         )
+    axis(1, data$asssigned_timestamp, format(data$asssigned_timestamp, "%b '%y"), tick = FALSE)
+  })
   
   #Barplot descibing aspects of mentions
   #Would this look better as multiple pie plots??
@@ -51,7 +64,6 @@ shinyServer(function(input, output) {
             xlab = "Mention Characteristic",
             ylab = "Fraction of Total Mentions with Characteristic")
   })
-
   #Barplot of 10 most common software names
   output$software_names_chart <- renderPlot({
     data <- getMostCommonSoftware()
