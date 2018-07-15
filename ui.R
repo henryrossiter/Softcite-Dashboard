@@ -23,29 +23,29 @@ dashboardPage(skin = "black",
         # Boxes use row orientation
         fluidRow(
           #ouput stats as defined in server.r
-          valueBoxOutput("num_articles"),
-          valueBoxOutput("num_coders"),
-          valueBoxOutput("num_mentions"),
+          valueBoxOutput("numArticles"),
+          valueBoxOutput("numCoders"),
+          valueBoxOutput("numMentions"),
           box(title = "Articles Assigned By Coder",
-              plotOutput("assigned_by_coder")),
+              plotOutput("assignedByCoder")),
           box(title = "Cumulative Articles Assigned",
-              plotOutput("progress_plot"))
+              plotOutput("progressPlot"))
         )
       ),
       tabItem(tabName = "missingWork",
         fluidRow(
-          valueBoxOutput("pct_coded"),
+          valueBoxOutput("pctCoded"),
           box(title = "Missing Work By Coder",
-              plotOutput("missing_by_coder"))
+              plotOutput("missingByCoder"))
         )
       ),
       tabItem(tabName = "mentionAnalysis",
         fluidRow(
           box(title = "Mention Composition",
-              plotOutput("mention_compositions")
+              plotOutput("mentionCompositions")
           ),
           box(title = "Software Names by Number of Mentions",
-              plotOutput("software_names_chart")
+              plotOutput("softwareNamesChart")
           )
         )
       ),
@@ -55,7 +55,8 @@ dashboardPage(skin = "black",
                 selectInput("coderInput","Select a coder",
                             choices = getCoders()
                             ),
-                valueBoxOutput("codedByCoder")
+                valueBoxOutput("codedByCoder"),
+                plotOutput("cumAssignedByCoder")
               )
       )
     )

@@ -141,11 +141,6 @@ pmc_assignments <- assignments %>%
 pmc_assignees <- pmc_assignments %>% 
   pull(assigned_to) %>% unique()
 
-#pmc_assignments %>% 
-#  group_by(assigned_to) %>% 
-#  tally() %>% 
-#  arrange(n)
-
 # work assigned.
 assigned <- pmc_assignments %>% 
   select(article = pub_id, coder = assigned_to) %>%
@@ -237,5 +232,19 @@ getArticlesMissingByCoder <- function(){
     arrange(desc(num_missing))
   missingChart[3] <- NULL
   return(missingChart)
+}
+#returns dataframe of cumulative assigned articles and time
+#default parameter includes all coders in dataframe
+#optional parameter will only show assignments of specified coder
+cumAssigned <- function(coderSelection = "ALL"){
+  data <- as.data.frame(assignments)
+  if (coderSelection != "ALL"){
+    data <- (data[data$assigned_to == coderSelection,])
+  }
+  data <- data[order(data$asssigned_timestamp),]
+  data$asssigned_timestamp <- as.Date(data$asssigned_timestamp, "%m/%d/%Y", tz = "America/Chicago")
+  data$tot <- 1
+  data$tot <- cumsum(data$tot)
+  return(data)
 }
 
