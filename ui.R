@@ -37,7 +37,15 @@ dashboardPage(skin = "black",
           valueBoxOutput("pctCoded"),
           box(title = "Missing Work By Coder",
               plotOutput("missingByCoder"))
+        ),
+        tabBox(
+        title = "Coding Status of Assigned Articles",
+        height = "250px",
+        tabPanel("Integer", plotOutput("article_completion_status_integer")),
+        tabPanel("%", plotOutput("article_completion_status"))
+
         )
+
       ),
       tabItem(tabName = "mentionAnalysis",
         fluidRow(

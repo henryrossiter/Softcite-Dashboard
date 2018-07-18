@@ -73,6 +73,37 @@ shinyServer(function(input, output) {
             xlab = "Number of missing articles")
   })
   
+  # % assigned and completed articles pie chart
+  output$article_completion_status <- renderPlot({
+      
+      data<- getArticleCodingStatusDf()
+      slices<- c(notCoded$n, numcompleted$n)
+      lbls<- c("Not Coded:", "Coded:")
+      pct <- round(slices/sum(slices)*100, digits = 2)
+      lbls <- paste(lbls, pct) # add percents to labels
+      lbls <- paste(lbls,"%", sep="") # add % to labels
+      colors = c( "red", "green")
+      pie(slices,labels = lbls, col=colors,
+      main="")
+  })
+  
+  
+  #
+  output$article_completion_status_integer <-renderPlot({
+      
+      data <- getArticleCodingStatusDf()
+      slices<- c(notCoded$n, numcompleted$n)
+      lbls<- c("Not Coded:", "Coded:")
+      
+      count <- (slices)
+      lbls <- paste(lbls, count) # add percents to labels
+      colors = c( "red", "green")
+      pie(slices,labels = lbls, col=colors,
+      main="")
+      
+      
+  })
+  
   ### --------------------------------------------
   ### ----- Outputs for Mention Analysis tab -----
   ### --------------------------------------------
@@ -124,5 +155,5 @@ shinyServer(function(input, output) {
     }
   })
 })
-#ThisIsATest
+
 

@@ -203,14 +203,21 @@ getMostCommonSoftware <- function(){
 }
 
 #verify this function, not sure if calculation is correct
+
+#changing to tally instead of nrow
 getPctAssignedCoded <- function(){
+  #total articles assigned
   numAssigned <- pmc_assignments %>% 
-    group_by(assigned)
-  numAssigned = nrow(numAssigned)
+    group_by(assigned) %>% tally()
   
-  numReceived <- nrow(completed)
+  #number of articles coded
+  numCompleted<- completed %>% distinct() %>% tally() 
   
-  return(asPercent(numReceived/numAssigned))
+  #numAssigned = nrow(numAssigned)
+  
+  #numReceived <- nrow(completed)
+  
+  return(asPercent(numCompleted/numAssigned))
 }
 getAssignmentsByCoder <- function(){
   missingChart <- assigned %>% 
@@ -248,6 +255,45 @@ cumAssigned <- function(coderSelection = "ALL"){
   return(data)
 }
 
-#thisIsATest
+
+#returns the number of not coded assigned articles
+getPctAssignedNotCoded <- function() {
+    numAssigned <- pmc_assignments %>%
+    group_by(assigned)
+    
+    numAssigned = nrow(numAssigned)
+    
+    numNotCoded <- (numAssigned - numCoded)
+    
+    return(asPercent(numNotCoded/(numAssigned)))
+}
+#Returns a dataframe that contains the number of coded and not coded assigned articles
+getArticleCodingStatusDf <- function(){
+    #Creating DataFrame
+    numAssigned <- pmc_assignments %>% group_by(assigned) %>% tally()
+    
+    #number of articles coded
+    numCompleted<- completed %>% distinct() %>% tally()
+    
+    #create dataframe
+    df1 <- numassigned %>% full_join(numcompleted) %>% full_join(notCoded) %>% cbind(df1, total = c("assigned ","coded", "not coded" ))
+    dfCodedVsNotCoded<- df2[ -c(1) ]
+    colnames(dfCodedVsNotCoded) <- c("n", "articles")
+    dfCodedVsNotCoded1<- dfCodedVsNotCoded[-c(1), ]
+    
+    #final table that holds the number of articles assigned and their status
+    return(dfCodedVsNotCoded1)
+}
+
+#Creates a subset of software names using random sampling
+getRandomSampleOfSoftwareNames<- function() {
+    #makes all mentions the lowercase and distinct
+    software_names_distinct <- software_names %>% mutate(lowerName = str_to_lower(software_name)) %>%
+    distinct(software_names,lowerName)
+    #takes random sample of size 30
+    softwareSample <- software_names_distinct[sample(1:nrow(software_names_distinct),30,replace = FALSE),]
+    return(softwareSample)
+}
+
 
 
