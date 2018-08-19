@@ -1,5 +1,8 @@
 # ------ ui.R ------
 library(shinydashboard)
+library(dygraphs)
+
+library(xts)
 
 #make sure working directory is set to parent folder - use setwd()
 source(paste0(getwd(),"/queries.R"))
@@ -64,10 +67,13 @@ dashboardPage(skin = "black",
                             choices = getCoders()
                             ),
                 valueBoxOutput("codedByCoder"),
-                plotOutput("cumAssignedByCoder")
+                plotOutput("cumAssignedByCoder"), 
+                
+                dygraphOutput("dygraph"))
               )
       )
     )
   )
-)
+
+
 #ThisIsATest

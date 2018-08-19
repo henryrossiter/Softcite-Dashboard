@@ -255,6 +255,7 @@ cumAssigned <- function(coderSelection = "ALL"){
   return(data)
 }
 
+cumAssigned()
 
 #returns the number of not coded assigned articles
 getPctAssignedNotCoded <- function() {

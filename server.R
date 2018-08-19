@@ -141,19 +141,17 @@ shinyServer(function(input, output) {
       )
     }
   })
-  output$cumAssignedByCoder <- renderPlot({
-    #if a coder has been selected from 'coderInput' selectInput in UI
-    if(!is.null(input$coderInput)){
-      data <- cumAssigned(coderSelection = input$coderInput)
-      plot(data$asssigned_timestamp, data$tot,
-           type = "l",
-           xlab = "Date",
-           ylab = "Cumulative Assignments", 
-           xaxt="n"
-      )
-      axis(1, data$asssigned_timestamp, format(data$asssigned_timestamp, "%b '%y"), tick = FALSE)
+  
+  
+  output$dygraph <- renderDygraph({
+    if(!is.null(input$coderInput)) {
+      data <-(cumAssigned( coderSelection = input$coderInput))
+      data <- na.omit(data)
+      xts(data$tot, as.Date(data$asssigned_timestamp, format = "%Y-%m-%d")) %>%
+      dygraph() %>% dyAxis("y", label = "Number of Articles") %>% dyAxis("x", label = "Date") %>% dyRangeSelector(height = 20, strokeColor = "")
     }
   })
+  
 })
 
 
